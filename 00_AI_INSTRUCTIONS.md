@@ -15,7 +15,7 @@
 3. If you do not know something, explicitly mark it as `[UNKNOWN]`. Never present a guess as a fact.
 4. Use the strongest available evidence: official docs for technical/vendor claims, repository evidence for project-specific claims, and explicit assumptions/calculations for reasoning tasks.
 5. Important factual claims need a verifiable, trustworthy source. If no authoritative source exists, explain the assumptions and reasoning instead of inventing one.
-6. Fact-check important claims before responding and state verification limits honestly.
+6. Fact-check important claims before responding. For complex answers that need follow-up judgment, suggest exactly one likely next question.
 
 ## 6대 원칙
 
@@ -65,9 +65,29 @@
   "이 주장의 근거는 무엇인가? 근거를 제시할 수 있는가?"
 - 근거를 제시할 수 없는 중요한 사실 주장은 답변에서 제거하거나 `[UNKNOWN]`으로 표기한다.
 - 검증을 실행하지 못했거나 외부 상태를 확인하지 못했으면 그 범위와 이유를 밝힌다.
+- 간단한 결과 보고나 단답에는 예상 질문을 붙이지 않는다.
+- 조사, 설계, 인수인계, 선택지 비교처럼 복잡하거나 후속 판단이 필요한 답변에는
+  사용자가 이어서 물을 가능성이 높은 예상 질문을 답변 마지막에 정확히 1개 제시한다.
 
 ## 행동 규칙
 
+- 사용자가 `llm_wiki 참고해서 앞으로 프로젝트 진행해줘` 또는 같은 의미의 요청을 하면,
+  이를 프로젝트 전체 작업에 이 가이드를 적용하라는 표준 시작 요청으로 해석한다.
+- 표준 시작 요청을 받은 뒤에는 문서 읽기, `HANDOVER.md` 준비·갱신, 코드 조사, 구현,
+  검증과 결과 보고를 이 가이드에 따라 스스로 수행한다. 사용자가 각 절차를 따로 요청하게 하지 않는다.
+- 표준 시작 요청을 받으면 현재 작업 디렉터리와 Git 루트를 확인해 프로젝트 루트를 결정하고,
+  Claude Code와 Codex를 번갈아 사용해도 되도록 다음 연결 파일을 모두 생성하거나 보완한다:
+  - 프로젝트 루트 `CLAUDE.md`에 `@llm_wiki/00_AI_INSTRUCTIONS.md`를 추가한다.
+  - 프로젝트 루트 `AGENTS.md`에 작업 전 `llm_wiki/README.md`,
+    `llm_wiki/00_AI_INSTRUCTIONS.md`, `llm_wiki/01_WRITING_GUIDELINES.md`와
+    `llm_wiki/HANDOVER.md`를 읽고 따르라는 지시를 추가한다.
+- 연결 파일이 이미 있으면 기존 내용을 보존하고, 동일한 연결 또는 지시가 없을 때만 추가한다.
+  파일을 쓸 권한이 없거나 프로젝트 루트를 안전하게 결정할 수 없으면 임의 위치에 만들지 말고 보고한다.
+- 자동 연결의 공식 지원 범위는 로컬 프로젝트 파일을 읽고 쓸 수 있는 Claude Code와 Codex이다.
+  다른 AI에서는 해당 도구가 지원하는 프로젝트 지시 파일을 확인할 수 있을 때만 연결한다.
+  일반 웹 대화처럼 로컬 파일 접근 권한이 없으면 자동 연결을 시도하지 않는다.
+- 같은 대화와 프로젝트에서는 이후 작업마다 `llm_wiki` 적용 여부를 다시 묻지 않는다.
+  새 세션에서 규칙 파일이 자동으로 로드되지 않았다면 사용자의 표준 시작 요청이나 도구별 연결 파일이 필요하다.
 - 사용자가 `llm_wiki/`를 참고하라고 하면, 해당 폴더의 `README.md`, `00_AI_INSTRUCTIONS.md`,
   `01_WRITING_GUIDELINES.md`, `HANDOVER.md`(없으면 `02_HANDOVER_TEMPLATE.md`)를 먼저 읽고 작업한다.
 - 구현·수정 작업을 완료할 때마다 `HANDOVER.md`의 현재 상태, 검증 결과,
@@ -89,11 +109,14 @@
 ## 코딩 작업 안전 규칙
 
 - 저장소라면 작업 전 `git status`를 확인하고, 사용자가 만든 변경을 되돌리지 않는다.
-- Git 저장소에서 의미 있는 작업 단위가 완료되면 `git diff`와 `git status`를
-  확인하고, 해당 작업에서 만든 변경만 스테이징해 설명적인 메시지로 로컬 커밋한다.
-- 작업 전부터 있던 사용자 변경, 별개 작업, 비밀값, 생성물은 현재 작업 커밋에 혼합하지 않는다.
-- 커밋이 불가능하거나 안전하게 분리할 수 없으면 이유와 미커밋 변경 목록을 결과에 보고한다.
-- 원격 `push`, 브랜치 생성·삭제, 히스토리 재작성은 사용자 요청이나 프로젝트 규칙이 있을 때만 한다.
+- Git 저장소에서 작업이 완료되면 `git diff`와 `git status`를 확인하고 변경 파일과
+  권장 커밋 메시지를 사용자에게 보고한다.
+- `git add`와 `git commit`은 실행 직전에 사용자에게 물어보고 명시적으로 승인받은 경우에만 수행한다.
+- 원격 `push`도 실행 직전에 별도로 물어보고 명시적으로 승인받은 경우에만 수행한다.
+- 사용자가 앞선 요청에서 일반적으로 Git 기록을 원한다고 밝혔거나 프로젝트 규칙에 자동 커밋이
+  적혀 있어도, 현재 작업의 `commit`과 `push`에 대한 확인을 생략하지 않는다.
+- 승인을 받은 뒤에도 작업 전부터 있던 사용자 변경, 별개 작업, 비밀값, 생성물은 현재 작업 커밋에 혼합하지 않는다.
+- 브랜치 생성·삭제와 히스토리 재작성도 사용자의 명시적 승인 없이 수행하지 않는다.
 - `git reset --hard`, 강제 push, 대량 삭제, 운영 DB/결제/배포/클라우드 리소스 변경은
   사용자의 명시적 승인 없이 수행하지 않는다.
 - 새 구현 전에 README, 설정 파일, lock 파일, 테스트, 주변 코드를 먼저 확인한다.
