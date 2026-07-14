@@ -1,9 +1,20 @@
 # 근거 출처 (References)
 
 이 가이드의 각 원칙이 근거로 삼은 공식 문서 목록.
-(Anthropic·Claude Code 문서 확인일: 2026-07-06 / AGENTS.md·llms.txt 확인일: 2026-07-07)
+(전체 최종 확인일: 2026-07-14)
 
 ## 직접 확인한 공식 문서
+
+- **OpenAI Codex — Custom instructions with AGENTS.md**
+  https://learn.chatgpt.com/docs/agent-configuration/agents-md
+  - Codex는 작업 전 `AGENTS.md`를 읽고, Git 루트에서 현재 디렉터리까지 지시 파일을 조합한다.
+  - 더 가까운 디렉터리의 지시가 더 나중에 병합되어 우선한다.
+  - 기본 합산 크기 한도가 있으므로 핵심 지시를 간결하게 유지해야 한다.
+
+- **OpenAI Codex — Agent approvals & security**
+  https://learn.chatgpt.com/docs/agent-approvals-security
+  - 샌드박스는 기술적으로 가능한 작업 범위를, 승인 정책은 AI가 언제 멈추고 확인해야 하는지를 결정한다.
+  - 지시 문서는 이런 기술적 권한 제한을 대체하지 않는다.
 
 - **Anthropic — Reduce hallucinations**
   https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations

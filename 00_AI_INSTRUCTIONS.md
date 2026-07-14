@@ -1,9 +1,11 @@
 # AI 기본 지시사항 (llm_wiki Core Instructions)
 
-이 문서는 이 프로젝트에서 작업하는 **모든 AI 모델에게 적용되는 최우선 지시사항**이다.
+이 문서는 이 프로젝트에서 작업하는 AI를 위한 **저장소 공통 지침**이다.
+시스템·개발자·사용자 지시, 도구 권한과 충돌하면 더 높은 지시와 기술적 제약을 따른다.
 매 세션 시작 시 이 문서와 이 폴더의 `HANDOVER.md`를 먼저 읽고 작업을 시작한다.
-`HANDOVER.md`가 없으면 `02_HANDOVER_TEMPLATE.md`를 복사해 `HANDOVER.md`를 만든 뒤
-코드와 설정 파일에서 확인 가능한 항목을 채운다.
+`HANDOVER.md`가 없고 구현·수정 작업이며 쓰기 권한이 있으면
+`02_HANDOVER_TEMPLATE.md`를 복사해 만든 뒤 코드와 설정 파일에서 확인 가능한 항목을 채운다.
+단순 읽기·분석·리뷰 요청에서는 새 파일을 만들지 않는다.
 모르는 항목은 `[UNKNOWN]`으로 남긴다.
 
 ## Core Directives (English summary for cross-model compatibility)
@@ -13,7 +15,7 @@
 3. If you do not know something, explicitly mark it as `[UNKNOWN]`. Never present a guess as a fact.
 4. Use the strongest available evidence: official docs for technical/vendor claims, repository evidence for project-specific claims, and explicit assumptions/calculations for reasoning tasks.
 5. Important factual claims need a verifiable, trustworthy source. If no authoritative source exists, explain the assumptions and reasoning instead of inventing one.
-6. Fact-check every answer before responding, and end each substantial answer by anticipating the user's next 1 question.
+6. Fact-check important claims before responding and state verification limits honestly.
 
 ## 6대 원칙
 
@@ -27,7 +29,7 @@
 
 ### 2. 인수인계하듯 작업 내용을 공유한다
 - 작업을 시작하기 전에 `llm_wiki/HANDOVER.md`를 읽는다.
-- 의미 있는 작업 단위가 끝날 때마다 `llm_wiki/HANDOVER.md`를 갱신한다:
+- 구현·수정 작업의 의미 있는 단위가 끝날 때마다 `llm_wiki/HANDOVER.md`를 갱신한다:
   무엇을 했는지, 왜 그렇게 결정했는지, 현재 상태, 미해결 문제, 다음에 할 일.
 - 실패한 시도도 기록한다. 다음 AI가 같은 실수를 반복하지 않게 하는 것이 목적이다.
 - `HANDOVER.md`는 다음 경우에 갱신한다:
@@ -58,17 +60,18 @@
 - 계산이나 판단으로 답하는 경우에는 출처 대신 사용한 전제와 추론 과정을 짧게 밝힌다.
 - 출처 표기 형식: `(출처: <URL 또는 파일 경로>, 확인일: YYYY-MM-DD)`
 
-### 6. 팩트체크 후 답변하고, 예상 질문 1가지를 제시한다
+### 6. 중요한 주장을 팩트체크한 뒤 답변한다
 - 답변을 내보내기 전에 각 주장에 대해 스스로 검증한다:
   "이 주장의 근거는 무엇인가? 근거를 제시할 수 있는가?"
 - 근거를 제시할 수 없는 중요한 사실 주장은 답변에서 제거하거나 `[UNKNOWN]`으로 표기한다.
-- 조사, 설계, 인수인계처럼 맥락이 긴 답변의 마지막에는
-  **사용자가 다음에 물어볼 법한 질문 1가지**를 예상하여 제시한다.
+- 검증을 실행하지 못했거나 외부 상태를 확인하지 못했으면 그 범위와 이유를 밝힌다.
 
 ## 행동 규칙
 
 - 사용자가 `llm_wiki/`를 참고하라고 하면, 해당 폴더의 `README.md`, `00_AI_INSTRUCTIONS.md`,
   `01_WRITING_GUIDELINES.md`, `HANDOVER.md`(없으면 `02_HANDOVER_TEMPLATE.md`)를 먼저 읽고 작업한다.
+- 구현·수정 작업을 완료할 때마다 `HANDOVER.md`의 현재 상태, 검증 결과,
+  미해결 문제와 다음 할 일이 실제 상태와 맞는지 확인하고 필요한 부분을 갱신한다.
 - 요청이 조금 불명확해도 아래 조건을 모두 만족하면 질문하지 말고 진행한다:
   변경 범위가 작다; 쉽게 되돌릴 수 있다; 데이터 삭제, 비용 발생, 배포, 보안/개인정보 영향이 없다;
   기존 코드나 문서에서 합리적인 방향을 확인할 수 있다.
@@ -86,9 +89,13 @@
 ## 코딩 작업 안전 규칙
 
 - 저장소라면 작업 전 `git status`를 확인하고, 사용자가 만든 변경을 되돌리지 않는다.
+- Git 저장소에서 의미 있는 작업 단위가 완료되면 `git diff`와 `git status`를
+  확인하고, 해당 작업에서 만든 변경만 스테이징해 설명적인 메시지로 로컬 커밋한다.
+- 작업 전부터 있던 사용자 변경, 별개 작업, 비밀값, 생성물은 현재 작업 커밋에 혼합하지 않는다.
+- 커밋이 불가능하거나 안전하게 분리할 수 없으면 이유와 미커밋 변경 목록을 결과에 보고한다.
+- 원격 `push`, 브랜치 생성·삭제, 히스토리 재작성은 사용자 요청이나 프로젝트 규칙이 있을 때만 한다.
 - `git reset --hard`, 강제 push, 대량 삭제, 운영 DB/결제/배포/클라우드 리소스 변경은
   사용자의 명시적 승인 없이 수행하지 않는다.
-- 커밋은 사용자가 요청했거나 프로젝트 운영 규칙에 명시된 경우에만 만든다.
 - 새 구현 전에 README, 설정 파일, lock 파일, 테스트, 주변 코드를 먼저 확인한다.
 - 기존 패턴, 프레임워크, helper API, 테스트 방식을 우선 사용한다.
 - 새 의존성을 추가해야 하면 이유와 영향을 설명하고, 프로젝트 관례 또는 사용자 승인을 따른다.
