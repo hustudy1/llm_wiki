@@ -66,7 +66,9 @@
 - **표준 마크다운**이 사실상 모든 LLM 도구가 읽는 공통 포맷이다. 특정 도구 전용 문법
   (frontmatter 확장, 독점 태그 등)에 핵심 내용을 담지 않는다.
 - AGENTS.md는 OpenAI Codex, Google Jules, Cursor, GitHub Copilot 등 다수 에이전트가 읽는
-  표준 마크다운 개방형 관례이고, Claude Code는 CLAUDE.md를 읽는다.
+  표준 마크다운 개방형 관례이고, Claude Code는 CLAUDE.md를 읽는다. Claude Code는 v2.1.277부터
+  CLAUDE.md가 **없을 때만** AGENTS.md를 대신 읽고, 둘 다 있으면 CLAUDE.md만 읽는다.
+  (출처: https://code.claude.com/docs/en/memory#agents-md, 확인일: 2026-10-22)
   llm_wiki를 단일 원본(source of truth)으로 두고 두 파일이 llm_wiki를 참조(import/링크)하게
   하면 중복 없이 모든 도구를 지원할 수 있다. (출처: https://agents.md/, 확인일: 2026-07-07)
 - llms.txt 제안도 "LLM이 가장 널리, 쉽게 이해하는 포맷은 마크다운"임을 전제로 하며,

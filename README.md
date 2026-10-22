@@ -1,6 +1,6 @@
 # llm_wiki 가이드
 
-가이드 버전: `v0.6.0` (최종 갱신: 2026-10-21)
+가이드 버전: `v0.7.0` (최종 갱신: 2026-10-22)
 
 이 폴더는 **프로젝트에서 AI 코딩 도구를 사용할 때 기초가 되는 지시사항 묶음**이며,
 `llm_wiki`라는 이름의 git 저장소로 관리한다. 새 프로젝트를 시작할 때 이 폴더를
@@ -16,16 +16,34 @@
 | `01_WRITING_GUIDELINES.md` | llm_wiki 문서를 **생성·갱신하는 AI가 유의해야 할 사항** (공식 문서 근거 포함) |
 | `02_HANDOVER_TEMPLATE.md` | 인수인계 문서 템플릿. 복사해서 `llm_wiki/HANDOVER.md`로 사용 |
 | `03_REFERENCES.md` | 이 가이드의 근거가 된 공식 문서 출처 목록 |
+| `apply.sh`, `apply.ps1` | 프로젝트에 llm_wiki를 적용하거나 새 버전으로 갱신하는 스크립트 (아래 "새 프로젝트에 적용하는 방법") |
 | `domains/` | 분야별(빅데이터, 인프라, DB, AI/ML) 지침과 요청 양식. 자동으로 읽지 않고 해당 분야 작업 때만 읽는다. 사용법은 `domains/README.md` |
 
 ## 새 프로젝트에 적용하는 방법
 
-1. 이 저장소를 프로젝트 루트에 `llm_wiki/` 이름으로 복사한다.
-   git clone으로 받았다면 복사본 안의 `.git` 폴더를 삭제한다
-   (삭제하지 않으면 프로젝트 저장소가 이 폴더의 파일을 추적하지 못한다).
-2. 프로젝트 운영 규칙에 따라 `llm_wiki/` 전체를 Git에 포함한다.
-3. VS Code의 Claude Code 또는 Codex에서 프로젝트를 열고 아래의 표준 시작 요청을 한 번 입력한다.
-   연결 파일과 `HANDOVER.md` 준비는 AI가 자동으로 수행한다.
+적용 스크립트로 한 번에 한다 (권장). 이 저장소를 받아 둔 폴더에서 실행한다.
+
+```bash
+bash apply.sh <프로젝트 폴더> --dry-run    # 바꿀 내용만 확인
+bash apply.sh <프로젝트 폴더>              # 적용
+```
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\apply.ps1 <프로젝트 폴더>
+```
+
+- `llm_wiki/`가 없으면 공통 문서를 복사한다(`.git`과 적용 스크립트는 복사하지 않는다).
+- 이미 있으면 버전을 비교해, 다를 때만 공통 문서를 새것으로 바꾼다. `HANDOVER.md`처럼 프로젝트에서 만든 파일은 그대로 두고,
+  바꾸기 전 폴더는 `~/.llm_wiki_backup/`에 백업한다. 같은 버전이면 아무것도 바꾸지 않는다.
+- 연결 파일을 만들거나 보완한다: `CLAUDE.md`에 `@llm_wiki/00_AI_INSTRUCTIONS.md`, `AGENTS.md`에 llm_wiki 읽기 지시.
+  같은 줄이 이미 있으면 추가하지 않는다.
+- commit은 하지 않는다. 적용 후 `git status`로 확인하고 `llm_wiki/` 전체를 Git에 포함한다.
+
+스크립트 없이 하려면 이 저장소를 프로젝트 루트에 `llm_wiki/` 이름으로 복사하고(git clone으로 받았다면 복사본의 `.git` 폴더 삭제),
+아래 표준 시작 요청을 하면 AI가 연결 파일을 만든다.
+
+그다음 VS Code의 Claude Code 또는 Codex에서 프로젝트를 열고 아래의 표준 시작 요청을 한 번 입력한다.
+`HANDOVER.md` 준비는 AI가 자동으로 수행한다.
 
 ## AI에게 요청하는 방법
 
@@ -60,19 +78,29 @@ AI는 사용자에게 문서별 읽기 순서나 인수인계 작성 방법을 �
 ## 버전과 동기화
 
 - 프로젝트에 복사한 `llm_wiki/README.md`의 가이드 버전을 유지한다.
-- 이 원본 가이드를 갱신하면 버전을 올리고, 적용 대상 프로젝트의 `llm_wiki/`와 차이를 비교해 반영한다.
+- 이 원본 가이드를 갱신하면 버전을 올린다. 적용한 프로젝트는 `bash apply.sh <프로젝트 폴더>`로 갱신한다(HANDOVER.md 보존, 기존 폴더 백업).
 - 프로젝트별로 바꾼 규칙은 `llm_wiki/HANDOVER.md` 또는 프로젝트 전용 문서에 이유와 함께 기록한다.
 - 서로 다른 프로젝트의 `llm_wiki/`가 달라질 수 있다. 공통으로 유용한 변경만 이 원본 가이드에 되돌려 반영한다.
 
-## v0.6.0 변경 사항
+## v0.7.0 변경 사항
 
-- `ai-prompt-library` 저장소의 분야별 자료(지침, 요청 양식, 예시, 환경 양식)를 `domains/`로 옮겼다.
-  공통 규칙은 6대 원칙과 겹쳐서 옮기지 않았다.
-- 옮기면서 주소가 바뀌거나 없어진 공식 문서 링크를 현재 주소로 고쳤다 (2026-10-21 확인).
-- `00_AI_INSTRUCTIONS.md`에 분야별 작업일 때만 `domains/`를 읽는 규칙을 추가했다.
+- 적용 스크립트(`apply.sh`, `apply.ps1`)를 추가했다. 복사, `.git` 제외, 연결 파일 생성을 한 번에 하고,
+  이미 적용한 프로젝트는 HANDOVER.md를 보존한 채 새 버전으로 갱신한다. AI가 연결 파일을 만드느라 쓰던 턴이 줄어든다.
+- 프로젝트 루트의 `REVIEW.md`(검토 점검 항목)를 따르는 규칙을 추가했다. 아래 "함께 쓰는 도구"의 work-review와 같은 파일을 쓴다.
+- Claude Code의 AGENTS.md 읽기 방식(CLAUDE.md가 없을 때만 읽음, v2.1.277+)을 공식 문서 기준으로 바로잡았다.
 
-v0.5.0의 주요 내용(HANDOVER 갱신, commit·push 승인, 예상 질문 1개, `CLAUDE.md`·`AGENTS.md` 자동 연결)은
-`00_AI_INSTRUCTIONS.md`에 반영되어 있다.
+v0.6.0에서 분야별 자료(`domains/`)를, v0.5.0에서 HANDOVER 갱신·commit/push 승인·예상 질문 1개·연결 파일 자동 생성을 넣었다.
+
+## 함께 쓰는 도구
+
+llm_wiki는 AI 에이전트 작업 환경(하네스)의 **지침** 부분이다. 나머지는 별도 저장소로 둔다. 모두 선택이다.
+
+| 역할 | 저장소 | 하는 일 |
+|------|--------|---------|
+| 지침 | llm_wiki (이 저장소) | 규칙, 인수인계, 분야별 지침 |
+| 비용 | [agent-token-lab](https://github.com/hustudy1/agent-token-lab) | 토큰 절약 도구(Caveman, RTK) 설치·업데이트, 사용량 보기, 실측 |
+| 검증 | [work-review](https://github.com/hustudy1/work-review) | 작업 담당과 검증 담당(별도 에이전트)을 나눠 통과할 때까지 반복. 규칙은 `REVIEW.md` |
+| 지식 | [RAG](https://github.com/hustudy1/RAG) | 문서 폴더를 검색 색인으로 만들어 필요한 조각만 읽힘 |
 
 ## 운영 원칙
 

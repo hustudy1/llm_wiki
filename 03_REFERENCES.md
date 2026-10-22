@@ -43,6 +43,7 @@
   - 모순 규칙이 있으면 AI가 임의 선택 → 주기적 검토·삭제 필요.
   - 지시 파일은 맥락이지 강제 장치가 아니다. 강제는 hook/permissions로.
   - AGENTS.md를 쓰는 저장소는 CLAUDE.md에서 `@AGENTS.md` import 또는 심볼릭 링크로 단일 원본 유지.
+  - v2.1.277부터 CLAUDE.md가 없으면 AGENTS.md를 대신 읽는다. 둘 다 있으면 CLAUDE.md만 읽는다(기본값, 설정으로 변경 가능). (확인일: 2026-10-22)
 
 - **AGENTS.md — 코딩 에이전트용 개방형 가이드 파일**
   https://agents.md/
