@@ -36,7 +36,7 @@ powershell -ExecutionPolicy Bypass -File .\apply.ps1 <프로젝트 폴더>
 - 이미 있으면 버전을 비교해, 다를 때만 공통 문서를 새것으로 바꾼다. `HANDOVER.md`처럼 프로젝트에서 만든 파일은 그대로 두고,
   바꾸기 전 폴더는 `~/.llm_wiki_backup/`에 백업한다. 같은 버전이면 아무것도 바꾸지 않는다.
 - 연결 파일을 만들거나 보완한다: `CLAUDE.md`에 `@llm_wiki/00_AI_INSTRUCTIONS.md`, `AGENTS.md`에 llm_wiki 읽기 지시.
-  같은 줄이 이미 있으면 추가하지 않는다.
+  `CLAUDE.md`에 같은 줄이 있거나, `AGENTS.md`에 이미 `00_AI_INSTRUCTIONS.md`를 가리키는 내용이 있으면 추가하지 않는다(예전에 AI가 만든 연결 파일도 인식한다).
 - commit은 하지 않는다. 적용 후 `git status`로 확인하고 `llm_wiki/` 전체를 Git에 포함한다.
 
 스크립트 없이 하려면 이 저장소를 프로젝트 루트에 `llm_wiki/` 이름으로 복사하고(git clone으로 받았다면 복사본의 `.git` 폴더 삭제),

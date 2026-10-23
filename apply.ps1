@@ -11,7 +11,7 @@
      HANDOVER.md 등 프로젝트에서 만든 파일은 그대로 둔다. 바꾸기 전 폴더는 ~\.llm_wiki_backup\ 에 백업한다.
   2. 연결 파일을 만들거나 보완한다 (이미 있으면 같은 줄이 없을 때만 추가).
      CLAUDE.md: @llm_wiki/00_AI_INSTRUCTIONS.md      (Claude Code가 세션 시작 때 자동으로 읽음)
-     AGENTS.md: llm_wiki 문서를 읽으라는 지시         (Codex 등)
+     AGENTS.md: llm_wiki 문서를 읽으라는 지시         (Codex 등). 이미 그 문서를 가리키는 내용이 있으면 건드리지 않는다.
   commit은 하지 않는다.
 #>
 [CmdletBinding()]
@@ -29,6 +29,9 @@ $Src        = $PSScriptRoot
 $Core       = @('README.md', '00_AI_INSTRUCTIONS.md', '01_WRITING_GUIDELINES.md', '02_HANDOVER_TEMPLATE.md', '03_REFERENCES.md', 'domains')
 $ClaudeLine = '@llm_wiki/00_AI_INSTRUCTIONS.md'
 $AgentsMark = '<!-- llm_wiki -->'
+# AGENTS.md에 이 문구가 이미 있으면 llm_wiki 지침을 가리키는 것으로 보고 추가하지 않는다.
+# (예전에 AI가 직접 만든 AGENTS.md에는 위 표시가 없어서, 표시만 보면 같은 내용이 두 번 들어간다)
+$AgentsKey  = '00_AI_INSTRUCTIONS.md'
 $Utf8NoBom  = New-Object System.Text.UTF8Encoding($false)
 
 function Write-Info { param([string]$Text) Write-Host "  $Text" }
@@ -112,7 +115,7 @@ elseif ($DryRun) { Write-Info "[dry-run] CLAUDE.md 에 '$ClaudeLine' 추가" }
 else { Add-Text $claudeMd ($ClaudeLine + "`n"); Write-Ok "CLAUDE.md: '$ClaudeLine' 추가" }
 
 $agentsMd = Join-Path $Target 'AGENTS.md'
-if ((Test-Path -LiteralPath $agentsMd) -and (Select-String -LiteralPath $agentsMd -Pattern $AgentsMark -SimpleMatch -Quiet)) {
+if ((Test-Path -LiteralPath $agentsMd) -and (Select-String -LiteralPath $agentsMd -Pattern $AgentsKey -SimpleMatch -Quiet)) {
   Write-Ok 'AGENTS.md: 이미 연결됨'
 }
 elseif ($DryRun) { Write-Info '[dry-run] AGENTS.md 에 llm_wiki 읽기 지시 추가' }
